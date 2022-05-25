@@ -1,6 +1,5 @@
 package com.fin.breweryapp.web.controller;
 
-
 import com.fin.breweryapp.web.model.BeerDTO;
 import com.fin.breweryapp.web.service.BeerService;
 import org.springframework.http.HttpStatus;
@@ -13,34 +12,34 @@ import java.util.UUID;
 @RequestMapping("/api/v1/beer")
 public class BeerController {
 
-    private final BeerService beerService;
+	private final BeerService beerService;
 
-    public BeerController(BeerService beerService) {
-        this.beerService = beerService;
-    }
+	public BeerController(BeerService beerService) {
+		this.beerService = beerService;
+	}
 
-    @GetMapping("/{beerId}")
-    public ResponseEntity<?> getBeer(UUID beerId) {
+	@GetMapping("/{beerId}")
+	public ResponseEntity<?> getBeer(@PathVariable("beerId") UUID beerId) {
 
-        return new ResponseEntity<>(beerService.getBeerById(beerId), HttpStatus.OK);
-    }
+		return new ResponseEntity<>(beerService.getBeerById(beerId), HttpStatus.OK);
+	}
 
-    @PostMapping("/{beerId}")
-    public ResponseEntity<?> saveBeer(@RequestBody BeerDTO beerDTO) {
+	@PostMapping
+	public ResponseEntity<?> saveBeer(@RequestBody BeerDTO beerDTO) {
+		BeerDTO savedBeerDTO = beerService.saveBeer(beerDTO);
+		return new ResponseEntity<>(savedBeerDTO, HttpStatus.OK);
+	}
 
-        return new ResponseEntity<>(beerService.saveBeer(beerDTO), HttpStatus.OK);
-    }
+	@PutMapping("/{beerId}")
+	public ResponseEntity<?> updateBeer(@RequestBody BeerDTO beerDTO, @PathVariable("beerId") UUID beerId) {
 
-    @PutMapping("/{beerId}")
-    public ResponseEntity<?> updateBeer(@RequestBody BeerDTO beerDTO, @PathVariable("beerId") UUID beerId) {
+		return new ResponseEntity<>(beerService.updateBeer(beerId), HttpStatus.NO_CONTENT);
+	}
 
-        return new ResponseEntity<>(beerService.updateBeer(beerId), HttpStatus.NO_CONTENT);
-    }
+	@DeleteMapping("/{beerId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteBeer( @PathVariable("beerId") UUID beerId) {
 
-    @DeleteMapping("/{beerId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteBeer(UUID beerId) {
-
-        beerService.deleteBeerById(beerId);
-    }
+		beerService.deleteBeerById(beerId);
+	}
 }
