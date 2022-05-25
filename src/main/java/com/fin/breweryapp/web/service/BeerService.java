@@ -6,11 +6,11 @@ import java.util.UUID;
 
 public interface BeerService {
 
-    BeerDTO getBeerById(UUID beerId);
+	BeerDTO getBeerById(UUID beerId);
 
-    void deleteBeerById(UUID beerId);
+	void deleteBeerById(UUID beerId);
 
-    Object updateBeer(UUID beerId);
+	BeerDTO updateBeer(UUID beerId);
 
-    Object saveBeer(BeerDTO beerDTO);
+	BeerDTO saveBeer(BeerDTO beerDTO);
 }
