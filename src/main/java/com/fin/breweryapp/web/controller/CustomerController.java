@@ -1,29 +1,52 @@
 package com.fin.breweryapp.web.controller;
 
-
-import com.fin.breweryapp.web.model.BeerDTO;
-import com.fin.breweryapp.web.service.BeerService;
+import com.fin.breweryapp.web.model.CustomerDTO;
+import com.fin.breweryapp.web.service.CustomerService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/beer")
-public class BeerController {
+@RequestMapping("/api/v1/customer")
+public class CustomerController {
 
-    private final BeerService beerService;
+	private final CustomerService customerService;
 
-    public BeerController(BeerService beerService) {
-        this.beerService = beerService;
-    }
+	public CustomerController(CustomerService customerService) {
+		this.customerService = customerService;
 
-    @GetMapping("/{beerId}")
-    public ResponseEntity<?> getBeer(UUID beerId) {
+	}
 
-        return new ResponseEntity<>(beerService.getBeerById(beerId), HttpStatus.OK);
-    }
+	@GetMapping("/{customerId}")
+	public ResponseEntity<CustomerDTO> getBeer(@PathVariable("customerId") UUID customerId) {
+
+		return new ResponseEntity<>(customerService.getCustomerById(customerId), HttpStatus.OK);
+	}
+
+	@PostMapping
+	public ResponseEntity<CustomerDTO> save(@RequestBody CustomerDTO customer) {
+
+		CustomerDTO savedCustomerDTO = customerService.saveCustomer(customer);
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("location", "/api/v1/customer/" + savedCustomerDTO.getId().toString());
+		return new ResponseEntity<>(headers, HttpStatus.CREATED);
+	}
+
+	@PutMapping("/{customerId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void updateCustomer(@PathVariable("customerId") UUID customerId, @RequestBody CustomerDTO customer) {
+
+		customerService.updateCustomer(customer, customerId);
+
+	}
+
+	@DeleteMapping("/{customerId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteCustomer(@PathVariable("customerId") UUID customerId) {
+
+		customerService.deleteCustomer(customerId);
+	}
 }
